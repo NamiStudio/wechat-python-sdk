@@ -108,10 +108,10 @@ class WechatBasic(object):
         :raises ParseError: 解析微信服务器数据错误, 数据不合法
         """
         result = {}
-        if type(data) == unicode:
-            data = data.encode('utf-8')
-        elif type(data) == str:
+        if type(data) == str:
             pass
+        elif type(data) == unicode:
+            data = data.encode('utf-8')
         else:
             raise ParseError()
 
@@ -954,15 +954,17 @@ class WechatBasic(object):
         :param data: 需要转换的数据
         :return: 转换好的数据
         """
+        """No need for python3
         if not data:
             return data
-
         result = None
         if isinstance(data, str):
             result = data.decode('utf-8')
         else:
             result = data
         return result
+        """
+        return data
 
     def _transcoding_list(self, data):
         """

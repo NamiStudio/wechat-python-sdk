@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import re
 
 from .messages import WechatMessage
 
@@ -226,12 +227,17 @@ class ArticleReply(WechatReply):
     def render(self):
         items = []
         for article in self._articles:
-            items.append(ArticleReply.ITEM_TEMPLATE.format(
-                title=article.title,
-                description=article.description,
-                picurl=article.picurl,
-                url=article.url,
-            ))
+            item = ArticleReply.ITEM_TEMPLATE.format(
+                    title=article.title,
+                    description=article.description,
+                    picurl=article.picurl,
+                    url=article.url,
+            )
+            if article.url is None:
+                re.sub(r"<PicUrl>.*</PicUrl>", item)
+            if article.picurl is None:
+                re.sub(r"<Url>.*</Url>", item)
+            items.append(item)
         self._args["items"] = ''.join(items)
         self._args["count"] = len(items)
         return ArticleReply.TEMPLATE.format(**self._args)
